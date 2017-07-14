@@ -1,0 +1,1758 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!-- ******************************************** -->
+<!-- ******************************************** -->
+<!-- *******************NIVEL 2****************** -->
+<!-- ******************************************** -->
+<!-- ******************************************** -->
+
+<!-- Agregar un evento -->
+
+<category>
+<pattern># [agrega+ añadi+ crear] ^ evento ^</pattern>
+<template>
+	<think><set name="topic">agregar-evento</set></think>
+	Dime el nombre del evento
+</template>
+</category>
+
+<topic name="agregar-evento">
+	<category>
+	<pattern>*</pattern>
+	<that> Dime el nombre del evento </that>
+	<template>
+		<think><set name="evento"><srai>ponerbarrabaja <star/></srai></set></think>
+		Dime la fecha del evento
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la fecha del evento </that>
+	<template>
+		<think><set var="fecha_hoy"><star/></set></think>
+		<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+		<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+		<condition var="contar_fecha">
+			<li value="10">
+				<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+				<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+				<condition var="comprobar">
+					<li value="yes">
+						<think><set name="fecha"><star/></set></think>
+						Dime la hora del evento
+					</li>
+
+					<li>
+						¡Esta fecha no es correcta! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_evento</set></think>
+					</li>
+				</condition>
+			</li>
+
+			<li>Introduce la fecha en formato dd/mm/aaaa. ¿Quieres probar otra vez? <think><set name="topic">intentar_evento</set></think></li>
+		</condition>
+
+	</template>
+	</category>
+
+	<category>
+	<pattern>* de * de+ *</pattern>
+	<that> Dime la fecha del evento </that>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto! ¿Quieres intentar agregar el evento otra vez? <think><set name="topic">intentar_evento</set></think></li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la hora del evento </that>
+	<template>
+		<think><set var="deletrea"><srai>deletrea <star/></srai></set></think>
+		<think><set var="hora_correcta"><srai>count <get var="deletrea"/></srai></set></think>
+		<condition var="hora_correcta">
+			<li value="5">
+				<think><set var="borrar"><srai>removeitem 3 in <get var="deletrea"/></srai></set></think>
+
+				<think><set var="horas"><srai>selectitem 1 in <get var="borrar"/></srai></set></think>
+				<think><set var="horas"><get var="horas"/><srai>selectitem 2 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><srai>selectitem 3 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><get var="minutos"/><srai>selectitem 4 in <get var="borrar"/></srai></set></think>
+
+				<think><set var="valores"><readset>hay_que_aumentar_hora</readset></set></think>
+				<think><set var="comprobar_hay_que_aumentar_hora"><srai>finditem <get var="minutos"/> in <get var="valores"/></srai></set></think>
+				<think><set var="minutos"><map name="transformar_horas"><get var="minutos"/></map></set></think>
+
+				<condition var="comprobar_hay_que_aumentar_hora">
+					<li value="0">
+					</li>
+
+					<li>
+						<condition var="horas">
+							<li value="23">
+								<think><set var="minutos">30</set></think>
+							</li>
+
+							<li>
+								<think><set var="horas"><map name="successor"><get var="horas"/></map></set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+
+				<think><set var="solucion"><get var="horas"/><get var="minutos"/></set></think>
+				<think><set name="fecha_hora"><get name="fecha"/>-<get var="solucion"/></set></think>
+
+				<think><set name="nombre_evento"><map name="nombres_eventos"><get name="fecha_hora"/></map></set></think>
+				<condition name="nombre_evento">
+					<li value="unknown">
+						<think><set var="n_eventos"><map name="numero_eventos"><get name="fecha"/></map></set></think>
+
+						<condition var="n_eventos">
+							<li value="unknown">
+								<addtomap>
+									<name>numero_eventos</name>
+									<key><get name="fecha"/></key>
+									<value>1</value>
+								</addtomap>
+							</li>
+
+							<li>
+								<modifymap>
+									<name>numero_eventos</name>
+									<key><get name="fecha"/></key>
+									<value><map name="successor"><get var="n_eventos"/></map></value>
+								</modifymap>
+							</li>
+						</condition>
+
+						<think><set var="lista_null">null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null</set></think>
+						<addtomap>
+							<name>nombres_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><get var="lista_null"/></value>
+						</addtomap>
+
+						<think><set var="posicion_horario"><map name="horarios"><get var="solucion"/></map></set></think>
+						<think><set var="nueva_lista"><srai>changeitem <get var="posicion_horario"/> by <get name="evento"/> in <get var="lista_null"/></srai></set></think>
+
+						<modifymap>
+							<name>nombres_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><get var="nueva_lista"/></value>
+						</modifymap>
+
+						<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+						<condition var="lista_eventos">
+							<li value="unknown">
+								<addtomap>
+									<name>listar_eventos</name>
+									<key><get name="fecha"/></key>
+									<value>-- <get name="evento"/></value>
+								</addtomap>
+							</li>
+
+							<li>
+								<modifymap>
+									<name>listar_eventos</name>
+									<key><get name="fecha"/></key>
+									<value><get var="lista_eventos"/> -- <get name="evento"/></value>
+								</modifymap>
+							</li>
+						</condition>
+
+						¿Quieres asociar un contacto al evento? <think><set name="topic">asociar_contacto_evento</set></think>
+					</li>
+
+					<li>
+						<think><set var="posicion_horario"><map name="horarios"><get var="solucion"/></map></set></think>
+						<think><set var="existe_evento"><srai>selectitem <get var="posicion_horario"/> in <get name="nombre_evento"/></srai></set></think>
+						<think><set var="comparar"><srai>compare null with <get var="existe_evento"/></srai></set></think>
+
+						<condition var="comparar">
+							<li value="yes">
+								<think><set var="nueva_lista"><srai>changeitem <get var="posicion_horario"/> by <get name="evento"/> in <get name="nombre_evento"/></srai></set></think>
+								<modifymap>
+									<name>nombres_eventos</name>
+									<key><get name="fecha"/></key>
+									<value><get var="nueva_lista"/></value>
+								</modifymap>
+
+								<think><set var="n_eventos"><map name="numero_eventos"><get name="fecha"/></map></set></think>
+
+								<condition var="n_eventos">
+									<li value="unknown">
+										<addtomap>
+											<name>numero_eventos</name>
+											<key><get name="fecha"/></key>
+											<value>1</value>
+										</addtomap>
+									</li>
+
+									<li>
+										<modifymap>
+											<name>numero_eventos</name>
+											<key><get name="fecha"/></key>
+											<value><map name="successor"><get var="n_eventos"/></map></value>
+										</modifymap>
+									</li>
+								</condition>
+
+								<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+								<condition var="lista_eventos">
+									<li value="unknown">
+										<addtomap>
+											<name>listar_eventos</name>
+											<key><get name="fecha"/></key>
+											<value>-- <get name="evento"/></value>
+										</addtomap>
+									</li>
+
+									<li>
+										<modifymap>
+											<name>listar_eventos</name>
+											<key><get name="fecha"/></key>
+											<value><get var="lista_eventos"/> -- <get name="evento"/></value>
+										</modifymap>
+									</li>
+								</condition>
+
+								¿Quieres asociar un contacto al evento? <think><set name="topic">asociar_contacto_evento</set></think>
+							</li>
+
+							<li>
+								¡Ya tienes un evento registrado en esta fecha y hora! ¿Quieres probar a agregar el evento otra vez? <think><set name="topic">intentar_evento</set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la hora en formato hh:mm. ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_evento</set></think>
+			</li>
+		</condition>
+
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Contacto asociado al evento correctamente, quieres asociar otro </that>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">Dime el apellido del contacto que quieres agregar</li>
+			<li>Se ha agregado el evento correctamente</li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Este contacto ya esta asociado, quieres probar otra vez </that>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">Dime el apellido del contacto que quieres agregar</li>
+			<li>Se ha agregado el evento correctamente</li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Este contacto no existe, quieres probar otra vez </that>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">Dime el apellido del contacto que quieres agregar</li>
+			<li>Se ha agregado el evento correctamente</li>
+		</condition>
+	</template>
+	</category>
+
+</topic>
+
+<topic name="intentar_evento">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">
+				Dime el nombre del evento <think><set name="topic">agregar-evento</set></think>
+			</li>
+
+			<li>
+				¡Avísame cuando necesites algo!
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="asociar_contacto_evento">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">Dime el apellido del contacto que quieres agregar <think><set name="topic">agregar_contacto_evento</set></think></li>
+			<li>¡Se ha agregado el evento correctamente! ¿Quieres agregar otro evento? <think><set name="topic">intentar_evento</set></think></li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="agregar_contacto_evento">
+	<category>
+	<pattern>*</pattern>
+	<that> Dime el apellido del contacto que quieres agregar </that>
+	<template>
+		<think><set var="apellido"><srai>ponerbarrabaja <star/></srai></set></think>
+		<think><set var="apellido_nom"><map name="nombres"><get var="apellido"/></map></set></think>
+
+		<condition var="apellido_nom">
+			<li value="unknown">¡Este contacto no existe! ¿Quieres probar otra vez? <think><set name="topic">asociar_contacto_evento</set></think></li>
+			<li>
+				<think><set var="contactos_asociados"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+				<condition var="contactos_asociados">
+					<li value="unknown">
+						<addtomap>
+							<name>contactos_eventos</name>
+							<key><get name="fecha_hora"/></key>
+							<value><get var="apellido"/></value>
+						</addtomap>
+						Contacto asociado al evento correctamente. ¿Quieres asociar otro? <think><set name="topic">asociar_contacto_evento</set></think>
+					</li>
+
+					<li>
+						<think><set var="posicion"><srai>finditem <get var="apellido"/> in <get var="contactos_asociados"/></srai></set></think>
+						<condition var="posicion">
+							<li value="0">
+								<modifymap>
+									<name>contactos_eventos</name>
+									<key><get name="fecha_hora"/></key>
+									<value><get var="contactos_asociados"/> <get var="apellido"/></value>
+								</modifymap>
+								Contacto asociado al evento correctamente. ¿Quieres asociar otro? <think><set name="topic">asociar_contacto_evento</set></think>
+							</li>
+
+							<li>
+								¡Este contacto ya está asociado! ¿Quieres probar otra vez? <think><set name="topic">asociar_contacto_evento</set></think>
+							</li>
+						</condition>
+					</li>
+				
+				</condition>
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<!-- Modificar un evento -->
+
+<category>
+<pattern># [modifica+ cambia+] ^ evento ^</pattern>
+<template>
+	<think><set name="topic">modificar-evento</set></think>
+	Dime la fecha del evento
+</template>
+</category>
+
+<topic name="modificar-evento">
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la fecha del evento </that>
+	<template>
+		<think><set var="fecha_hoy"><star/></set></think>
+		<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+		<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+		<condition var="contar_fecha">
+			<li value="10">
+				<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+				<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+				<condition var="comprobar">
+					<li value="yes">
+						<think><set name="fecha"><star/></set></think>
+						Dime la hora del evento
+					</li>
+
+					<li>
+						¡Esta fecha no es correcta! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_modificar_evento</set></think>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la fecha en formato dd/mm/aaaa. ¿Quieres probar otra vez? <think><set name="topic">intentar_modificar_evento</set></think>
+			</li>
+		</condition>
+
+		
+	</template>
+	</category>
+
+	<category>
+	<pattern>* de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_modificar_evento</set></think></li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la hora del evento </that>
+	<template>
+		<think><set var="deletrea"><srai>deletrea <star/></srai></set></think>
+		<think><set var="hora_correcta"><srai>count <get var="deletrea"/></srai></set></think>
+		<condition var="hora_correcta">
+			<li value="5">	
+				<think><set var="borrar"><srai>removeitem 3 in <get var="deletrea"/></srai></set></think>
+
+				<think><set var="horas"><srai>selectitem 1 in <get var="borrar"/></srai></set></think>
+				<think><set var="horas"><get var="horas"/><srai>selectitem 2 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><srai>selectitem 3 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><get var="minutos"/><srai>selectitem 4 in <get var="borrar"/></srai></set></think>
+
+				<think><set var="valores"><readset>hay_que_aumentar_hora</readset></set></think>
+				<think><set var="comprobar_hay_que_aumentar_hora"><srai>finditem <get var="minutos"/> in <get var="valores"/></srai></set></think>
+				<think><set var="minutos"><map name="transformar_horas"><get var="minutos"/></map></set></think>
+
+				<condition var="comprobar_hay_que_aumentar_hora">
+					<li value="0">
+					</li>
+
+					<li>
+						<condition var="horas">
+							<li value="23">
+								<think><set var="minutos">30</set></think>
+							</li>
+
+							<li>
+								<think><set var="horas"><map name="successor"><get var="horas"/></map></set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+
+				<think><set var="solucion"><get var="horas"/><get var="minutos"/></set></think>
+
+				<think><set name="hora"><get var="solucion"/></set></think>
+				<think><set name="fecha_hora"><get name="fecha"/>-<get name="hora"/></set></think>
+
+				<think><set name="posicion_horario"><map name="horarios"><get name="hora"/></map></set></think>
+				<think><set var="nombre_evento"><map name="nombres_eventos"><get name="fecha"/></map></set></think>
+
+				<condition var="nombre_evento">
+					<li value="unknown">
+						¡No tienes ningún evento registrado en esta fecha y hora! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_modificar_evento</set></think>
+					</li>
+
+					<li>
+						<think><set var="evento_elegido"><srai>selectitem <get name="posicion_horario"/> in <get var="nombre_evento"/></srai></set></think>
+						<think><set var="comparar"><srai>compare null with <get var="evento_elegido"/></srai></set></think>
+						<condition var="comparar">
+							<li value="yes">
+								¡No tienes ningún evento registrado en esta fecha y hora! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_modificar_evento</set></think>
+							</li>
+
+							<li>
+								Titulo, fecha, hora o contacto asociado
+							</li>
+						</condition>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la hora en formato hh:mm. ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_modificar_evento</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Titulo, fecha, hora o contacto asociado </that>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="titulo">Dime el nuevo titulo</li>
+			<li value="hora">Dime la nueva hora</li>
+			<li value="fecha">Dime la nueva fecha <think><set name="topic">modificar_fecha</set></think></li>
+			<li value="contacto">Agregar o borrar un contacto <think><set name="topic">opciones_agregar_borrar</set></think></li>
+			<li>No te he entendido bien. ¿Quieres intentarlo otra vez? <think><set name="topic">opciones_modificar</set></think></li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime el nuevo titulo </that>
+	<template>
+		
+		<think><set var="nuevo_titulo"><srai>ponerbarrabaja <star/></srai></set></think>
+		<think><set var="lista_titulos"><map name="nombres_eventos"><get name="fecha"/></map></set></think>
+		<think><set var="titulo"><srai>selectitem <get name="posicion_horario"/> in <get var="lista_titulos"/></srai></set></think>
+		<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+
+		<think><set var="posicion"><srai>finditem <get var="titulo"/> in <get var="lista_eventos"/></srai></set></think>
+		<think><set var="nueva_lista"><srai>changeitem <get var="posicion"/> by <get var="nuevo_titulo"/> in <get var="lista_eventos"/></srai></set></think>
+
+		<modifymap>
+			<name>listar_eventos</name>
+			<key><get name="fecha"/></key>
+			<value><get var="nueva_lista"/></value>
+		</modifymap>
+
+		<think><set var="nueva_lista"><srai>changeitem <get name="posicion_horario"/> by <get var="nuevo_titulo"/> in <get var="lista_titulos"/></srai></set></think>
+
+		<modifymap>
+			<name>nombres_eventos</name>
+			<key><get name="fecha"/></key>
+			<value><get var="nueva_lista"/></value>
+		</modifymap>
+
+		Titulo del evento modificado. ¿Quieres modificar otro evento? <think><set name="topic">intentar_modificar_evento</set></think>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la nueva hora </that>
+	<template>
+		<think><set var="deletrea"><srai>deletrea <star/></srai></set></think>
+		<think><set var="hora_correcta"><srai>count <get var="deletrea"/></srai></set></think>
+		<condition var="hora_correcta">
+			<li value="5">
+				<think><set var="borrar"><srai>removeitem 3 in <get var="deletrea"/></srai></set></think>
+
+				<think><set var="horas"><srai>selectitem 1 in <get var="borrar"/></srai></set></think>
+				<think><set var="horas"><get var="horas"/><srai>selectitem 2 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><srai>selectitem 3 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><get var="minutos"/><srai>selectitem 4 in <get var="borrar"/></srai></set></think>
+
+				<think><set var="valores"><readset>hay_que_aumentar_hora</readset></set></think>
+				<think><set var="comprobar_hay_que_aumentar_hora"><srai>finditem <get var="minutos"/> in <get var="valores"/></srai></set></think>
+				<think><set var="minutos"><map name="transformar_horas"><get var="minutos"/></map></set></think>
+
+				<condition var="comprobar_hay_que_aumentar_hora">
+					<li value="0">
+					</li>
+
+					<li>
+						<condition var="horas">
+							<li value="23">
+								<think><set var="minutos">30</set></think>
+							</li>
+
+							<li>
+								<think><set var="horas"><map name="successor"><get var="horas"/></map></set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+
+				<think><set var="solucion"><get var="horas"/><get var="minutos"/></set></think>
+
+				<think><set var="lista_titulos"><map name="nombres_eventos"><get name="fecha"/></map></set></think>
+				<think><set var="titulo"><srai>selectitem <get name="posicion_horario"/> in <get var="lista_titulos"/></srai></set></think>
+				<think><set var="posicion_antigua"><srai>finditem <get var="titulo"/> in <get var="lista_titulos"/></srai></set></think>
+				<think><set var="lista_aux"><srai>changeitem <get var="posicion_antigua"/> by null in <get var="lista_titulos"/></srai></set></think>
+
+				<think><set var="posicion_nueva"><map name="horarios"><get var="solucion"/></map></set></think>
+				<think><set var="que_hay_en_posicion_nueva"><srai>selectitem <get var="posicion_nueva"/> in <get var="lista_titulos"/></srai></set></think>
+				<condition var="que_hay_en_posicion_nueva">
+					<li value="null">
+						<think><set var="lista_aux"><srai>changeitem <get var="posicion_nueva"/> by <get var="titulo"/> in <get var="lista_aux"/></srai></set></think>
+						<modifymap>
+							<name>nombres_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><get var="lista_aux"/></value>
+						</modifymap>
+
+						<think><set var="contactos_evento"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+
+						<condition var="contactos_evento">
+							<li value="unknown"></li>
+							<li>
+								<removefrommap>
+									<name>contactos_eventos</name>
+									<key><get name="fecha"/>-<get name="hora"/></key>
+								</removefrommap>
+
+								<addtomap>
+									<name>contactos_eventos</name>
+									<key><get name="fecha"/>-<get var="solucion"/></key>
+									<value><get var="contactos_evento"/></value>
+								</addtomap>
+							</li>
+						</condition>
+						Hora cambiada. ¿Quieres modificar otro evento? <think><set name="topic">intentar_modificar_evento</set></think>
+					</li>
+
+					<li>
+						No es posible hacer la modificación, ya hay un evento en esa hora. ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+					</li>
+				</condition>
+			</li>
+				
+			<li>
+				Introduce la hora en formato hh:mm. ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+
+</topic>
+
+<topic name="modificar_fecha">
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la nueva fecha </that>
+	<template>
+		<think><set var="nueva_fecha"><star/></set></think>
+		<think><set var="deletrear"><srai>deletrea <get var="nueva_fecha"/></srai></set></think>
+
+		<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+		<condition var="contar_fecha">
+			<li value="10">
+				<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+				<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+				<condition var="comprobar">
+					<li value="yes">
+						<think><set var="lista_titulos"><map name="nombres_eventos"><get name="fecha"/></map></set></think>
+						<think><set var="titulo"><srai>selectitem <get name="posicion_horario"/> in <get var="lista_titulos"/></srai></set></think>
+						<think><set var="posicion_antigua"><srai>finditem <get var="titulo"/> in <get var="lista_titulos"/></srai></set></think>
+						<think><set var="lista_aux"><srai>changeitem <get var="posicion_antigua"/> by null in <get var="lista_titulos"/></srai></set></think>
+
+						<think><set var="lista_nueva_fecha"><map name="nombres_eventos"><get var="nueva_fecha"/></map></set></think>
+						<condition var="lista_nueva_fecha">
+							<li value="unknown">
+								<modifymap>
+									<name>nombres_eventos</name>
+									<key><get name="fecha"/></key>
+									<value><get var="lista_aux"/></value>
+								</modifymap>
+
+								<think><set var="contenido_contactos"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+								<condition var="contenido_contactos">
+									<li value="unknown">
+									</li>
+
+									<li>
+										<removefrommap>
+											<name>contactos_eventos</name>
+											<key><get name="fecha_hora"/></key>
+										</removefrommap>
+
+										<addtomap>
+											<name>contactos_eventos</name>
+											<key><star/>-<get name="hora"/></key>
+											<value><get var="contenido_contactos"/></value>
+										</addtomap>
+									</li>
+								</condition>
+
+								<think><set var="n_eventos"><map name="numero_eventos"><get var="nueva_fecha"/></map></set></think>
+
+								<condition var="n_eventos">
+									<li value="unknown">
+										<addtomap>
+											<name>numero_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value>1</value>
+										</addtomap>
+									</li>
+
+									<li>
+										<modifymap>
+											<name>numero_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value><map name="successor"><get var="n_eventos"/></map></value>
+										</modifymap>
+									</li>
+								</condition>
+
+								<think><set var="lista_null">null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null</set></think>
+
+								<addtomap>
+									<name>nombres_eventos</name>
+									<key><get var="nueva_fecha"/></key>
+									<value><get var="lista_null"/></value>
+								</addtomap>
+
+								<think><set var="nueva_lista"><srai>changeitem <get var="posicion_antigua"/> by <get var="titulo"/> in <get var="lista_null"/></srai></set></think>
+
+								<modifymap>
+									<name>nombres_eventos</name>
+									<key><get var="nueva_fecha"/></key>
+									<value><get var="nueva_lista"/></value>
+								</modifymap>
+
+
+								<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+								<think><set var="posicion"><srai>finditem <get var="titulo"/> in <get var="lista_eventos"/></srai></set></think>
+								<think><set var="nueva_lista_eventos"><srai>removeitem <get var="posicion"/> in <get var="lista_eventos"/></srai></set></think>
+								<think><set var="nueva_lista_eventos"><srai>removeitem <map name="predecessor"><get var="posicion"/></map> in <get var="nueva_lista_eventos"/></srai></set></think>
+
+								<modifymap>
+									<name>listar_eventos</name>
+									<key><get name="fecha"/></key>
+									<value><get var="nueva_lista_eventos"/></value>
+								</modifymap>
+
+								<think><set var="lista_eventos"><map name="listar_eventos"><get var="nueva_fecha"/></map></set></think>
+								<condition var="lista_eventos">
+									<li value="unknown">
+										<addtomap>
+											<name>listar_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value>-- <get var="titulo"/></value>
+										</addtomap>
+									</li>
+
+									<li>
+										<modifymap>
+											<name>listar_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value><get var="lista_eventos"/> -- <get var="titulo"/></value>
+										</modifymap>
+									</li>
+								</condition>
+
+								<think><set var="nu_eventos"><map name="numero_eventos"><get name="fecha"/></map></set></think>
+
+								<condition var="nu_eventos">
+									<li value="1">
+										<removefrommap>
+											<name>numero_eventos</name>
+											<key><get name="fecha"/></key>
+										</removefrommap>
+
+										<removefrommap>
+											<name>listar_eventos</name>
+											<key><get name="fecha"/></key>
+										</removefrommap>
+
+										<removefrommap>
+											<name>nombres_eventos</name>
+											<key><get name="fecha"/></key>
+										</removefrommap>
+									</li>
+													
+									<li>
+										<modifymap>
+											<name>numero_eventos</name>
+											<key><get name="fecha"/></key>
+											<value><map name="predecessor"><get var="nu_eventos"/></map></value>
+										</modifymap>
+									</li>
+								</condition>
+
+								Fecha modificada. ¿Quieres modificar otro evento? <think><set name="topic">intentar_modificar_evento</set></think>
+							</li>
+
+							<li>
+								<think><set var="que_hay_nueva_fecha"><srai>selectitem <get var="posicion_antigua"/> in <get var="lista_nueva_fecha"/></srai></set></think>
+								<condition var="que_hay_nueva_fecha">
+									<li value="null">
+										<modifymap>
+											<name>nombres_eventos</name>
+											<key><get name="fecha"/></key>
+											<value><get var="lista_aux"/></value>
+										</modifymap>
+
+										<think><set var="contenido_contactos"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+								
+										<condition var="contenido_contactos">
+											<li value="unknown">
+											</li>
+
+											<li>
+												<removefrommap>
+													<name>contactos_eventos</name>
+													<key><get name="fecha_hora"/></key>
+												</removefrommap>
+
+												<addtomap>
+													<name>contactos_eventos</name>
+													<key><star/>-<get name="hora"/></key>
+													<value><get var="contenido_contactos"/></value>
+												</addtomap>
+											</li>
+										</condition>
+
+										<think><set var="lista_nueva_fecha"><srai>changeitem <get var="posicion_antigua"/> by <get var="titulo"/> in <get var="lista_nueva_fecha"/></srai></set></think>
+
+										<modifymap>
+											<name>nombres_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value><get var="lista_nueva_fecha"/></value>
+										</modifymap>
+
+										<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+										<think><set var="posicion"><srai>finditem <get var="titulo"/> in <get var="lista_eventos"/></srai></set></think>
+										<think><set var="nueva_lista_eventos"><srai>removeitem <get var="posicion"/> in <get var="lista_eventos"/></srai></set></think>
+										<think><set var="nueva_lista_eventos"><srai>removeitem <map name="predecessor"><get var="posicion"/></map> in <get var="nueva_lista_eventos"/></srai></set></think>
+
+										<modifymap>
+											<name>listar_eventos</name>
+											<key><get name="fecha"/></key>
+											<value><get var="nueva_lista_eventos"/></value>
+										</modifymap>
+
+										<think><set var="lista_eventos"><map name="listar_eventos"><get var="nueva_fecha"/></map></set></think>
+
+										<modifymap>
+											<name>listar_eventos</name>
+											<key><get var="nueva_fecha"/></key>
+											<value><get var="lista_eventos"/> -- <get var="titulo"/></value>
+										</modifymap>
+
+										<think><set var="n_eventos"><map name="numero_eventos"><get var="nueva_fecha"/></map></set></think>
+
+										<condition var="n_eventos">
+											<li value="unknown">
+												<addtomap>
+													<name>numero_eventos</name>
+													<key><get var="nueva_fecha"/></key>
+													<value>1</value>
+												</addtomap>
+											</li>
+
+											<li>
+												<modifymap>
+													<name>numero_eventos</name>
+													<key><get var="nueva_fecha"/></key>
+													<value><map name="successor"><get var="n_eventos"/></map></value>
+												</modifymap>
+											</li>
+										</condition>
+
+										<think><set var="nu_eventos"><map name="numero_eventos"><get name="fecha"/></map></set></think>
+
+										<condition var="nu_eventos">
+											<li value="1">
+												<removefrommap>
+													<name>numero_eventos</name>
+													<key><get name="fecha"/></key>
+												</removefrommap>
+
+												<removefrommap>
+													<name>listar_eventos</name>
+													<key><get name="fecha"/></key>
+												</removefrommap>
+
+												<removefrommap>
+													<name>nombres_eventos</name>
+													<key><get name="fecha"/></key>
+												</removefrommap>
+											</li>
+															
+											<li>
+												<modifymap>
+													<name>numero_eventos</name>
+													<key><get name="fecha"/></key>
+													<value><map name="predecessor"><get var="nu_eventos"/></map></value>
+												</modifymap>
+											</li>
+										</condition>
+
+										Fecha modificada. ¿Quieres modificar otro evento? <think><set name="topic">intentar_modificar_evento</set></think>
+									</li>
+
+									<li>
+										No se puede hacer la modificación, ya existe un evento en la fecha y hora indicada. ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+									</li>
+								</condition>
+							</li>
+						</condition>
+					</li>
+
+					<li>
+						¡Esta fecha no es correcta! ¿Quieres intentarlo otra vez? <think><set name="topic">opciones_modificar</set></think>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la fecha en formato dd/mm/aaaa. ¿Quieres intentarlo otra vez? <think><set name="topic">opciones_modificar</set></think>
+			</li>
+		</condition>
+		
+	</template>
+	</category>
+
+	<category>
+	<pattern>* de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto! ¿Quieres intentarlo otra vez? <think><set name="topic">opciones_modificar</set></think></li>
+		</condition>
+	</template>
+	</category>
+
+</topic>
+
+<topic name="intentar_modificar_evento">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">
+				Dime la fecha del evento <think><set name="topic">modificar-evento</set></think>
+			</li>
+
+			<li>
+				¡Avísame cuando necesites algo!
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="opciones_modificar">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">
+				Titulo, fecha, hora o contacto asociado <think><set name="topic">modificar-evento</set></think>
+			</li>
+
+			<li value="no">
+				¡Avísame cuando necesites algo!
+			</li>
+
+			<li>
+				No te he entendido bien. ¿Quieres intentarlo otra vez? <think><set name="topic">opciones_modificar</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="opciones_agregar_borrar">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="agregar">
+				Dime el apellido de la persona que quieres agregar <think><set name="topic">agregarcontactoevento</set></think>
+			</li>
+
+			<li value="borrar">
+				Dime el apellido de la persona que quieres borrar <think><set name="topic">borrarcontactoevento</set></think>
+			</li>
+
+			<li value="no">
+				¡Avísame cuando necesites algo!
+			</li>
+
+			<li>
+				No te he entendido bien. ¿Agregar o borrar contacto? Di no para salir <think><set name="topic">opciones_agregar_borrar</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="agregarcontactoevento">
+	<category>
+		<pattern>*</pattern>
+		<that> Dime el apellido de la persona que quieres agregar </that>
+		<template>
+			<think><set name="apellido"><srai>ponerbarrabaja <star/></srai></set></think>
+			<think><set var="apellido_nombre"><map name="nombres"><get name="apellido"/></map></set></think>
+			<condition var="apellido_nombre">
+				<li value="unknown">¡Este contacto no existe! ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think></li>
+
+				<li>
+					<think><set var="contactos_asociados_evento"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+
+					<condition var="contactos_asociados_evento">
+						<li value="unknown">
+							<addtomap>
+								<name>contactos_eventos</name>
+								<key><get name="fecha_hora"/></key>
+								<value><get name="apellido"/></value>
+							</addtomap>
+						</li>
+
+						<li>
+							<modifymap>
+								<name>contactos_eventos</name>
+								<key><get name="fecha_hora"/></key>
+								<value><get var="contactos_asociados_evento"/> <get name="apellido"/></value>
+							</modifymap>
+						</li>
+					</condition>
+
+					¡Contacto agregado! ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+				</li>
+			</condition>
+		</template>
+		</category>
+</topic>
+
+
+<topic name="borrarcontactoevento">
+	<category>
+		<pattern>*</pattern>
+		<that> Dime el apellido de la persona que quieres borrar </that>
+		<template>
+			<think><set name="apellido"><srai>ponerbarrabaja <star/></srai></set></think>
+			<think><set var="apellido_nombre"><map name="nombres"><get name="apellido"/></map></set></think>
+			<condition var="apellido_nombre">
+				<li value="unknown">¡Este contacto no existe! ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think></li>
+
+				<li>
+					<think><set var="contactos_asociados_evento"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+					<think><set var="posicion"><srai>finditem <get name="apellido"/> in <get var="contactos_asociados_evento"/></srai></set></think>
+
+					<condition var="posicion">
+						<li value="0">
+							¡Este contacto no estaba asociado a este evento! ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+						</li>
+
+						<li>
+							<think><set var="nuevos_contactos"><srai>removeitem <get var="posicion"/> in <get var="contactos_asociados_evento"/></srai></set></think>
+							<modifymap>
+								<name>contactos_eventos</name>
+								<key><get name="fecha_hora"/></key>
+								<value><get var="nuevos_contactos"/></value>
+							</modifymap>
+
+							<think><set var="lista_nueva"><map name="contactos_eventos"><get name="fecha_hora"/></map></set></think>
+							<condition var="lista_nueva">
+								<li value="$">
+									<removefrommap>
+										<name>contactos_eventos</name>
+										<key><get name="fecha_hora"/></key>
+									</removefrommap>
+								</li>
+							</condition>
+
+							¡Contacto borrado! ¿Quieres modificar algo más del evento? <think><set name="topic">opciones_modificar</set></think>
+						</li>
+					</condition>
+				</li>
+			</condition>
+		</template>
+		</category>
+</topic>
+
+<!-- Borrar evento -->
+
+<category>
+<pattern># [borra+ elimina+ quitar+] ^ evento ^</pattern>
+<template>
+	<think><set name="topic">borrar-evento</set></think>
+	Dime la fecha del evento
+</template>
+</category>
+
+<topic name="borrar-evento">
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la fecha del evento </that>
+	<template>
+		<think><set var="fecha_hoy"><star/></set></think>
+		<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+		<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+		<condition var="contar_fecha">
+			<li value="10">
+				<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+				<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+				<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+				<condition var="comprobar">
+					<li value="yes">
+						<think><set name="fecha"><star/></set></think>
+						Dime la hora del evento
+					</li>
+
+					<li>
+						¡Esta fecha no es correcta! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_borrar_evento</set></think>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la fecha en formato dd/mm/aaaa. ¿Quieres probar otra vez? <think><set name="topic">intentar_borrar_evento</set></think>
+			</li>
+		</condition>
+
+		
+	</template>
+	</category>
+
+	<category>
+	<pattern>* de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai><get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto! ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_borrar_evento</set></think></li>
+		</condition>
+	</template>
+	</category>
+
+	<category>
+	<pattern>*</pattern>
+	<that> Dime la hora del evento </that>
+	<template>
+		<think><set var="deletrea"><srai>deletrea <star/></srai></set></think>
+
+		<think><set var="contar_hora"><srai>count <get var="deletrea"/></srai></set></think>
+		<condition var="contar_hora">
+			<li value="5">
+				<think><set var="borrar"><srai>removeitem 3 in <get var="deletrea"/></srai></set></think>
+
+				<think><set var="horas"><srai>selectitem 1 in <get var="borrar"/></srai></set></think>
+				<think><set var="horas"><get var="horas"/><srai>selectitem 2 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><srai>selectitem 3 in <get var="borrar"/></srai></set></think>
+				<think><set var="minutos"><get var="minutos"/><srai>selectitem 4 in <get var="borrar"/></srai></set></think>
+
+				<think><set var="valores"><readset>hay_que_aumentar_hora</readset></set></think>
+				<think><set var="comprobar_hay_que_aumentar_hora"><srai>finditem <get var="minutos"/> in <get var="valores"/></srai></set></think>
+				<think><set var="minutos"><map name="transformar_horas"><get var="minutos"/></map></set></think>
+
+				<condition var="comprobar_hay_que_aumentar_hora">
+					<li value="0">
+					</li>
+
+					<li>
+						<condition var="horas">
+							<li value="23">
+								<think><set var="minutos">30</set></think>
+							</li>
+
+							<li>
+								<think><set var="horas"><map name="successor"><get var="horas"/></map></set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+
+				<think><set var="solucion"><get var="horas"/><get var="minutos"/></set></think>
+				<think><set name="hora"><get var="solucion"/></set></think>
+
+				<think><set name="posicion_horario"><map name="horarios"><get name="hora"/></map></set></think>
+				<think><set name="lista_titulos"><map name="nombres_eventos"><get name="fecha"/></map></set></think>
+				<condition name="lista_titulos">
+					<li value="unknown">
+						¡No tienes ningún evento registrado en esta fecha y hora! ¿Quieres borrar otro evento? <think><set name="topic">intentar_borrar_evento</set></think>
+					</li>
+
+					<li>
+						<think><set name="titulo"><srai>selectitem <get name="posicion_horario"/> in <get name="lista_titulos"/></srai></set></think>
+						<think><set var="comparar"><srai>compare null with <get name="titulo"/></srai></set></think>
+						
+						<condition var="comparar">
+							<li value="yes">
+								¡No tienes ningún evento registrado en esta fecha y hora! ¿Quieres borrar otro evento? <think><set name="topic">intentar_borrar_evento</set></think>
+							</li>
+
+							<li>
+								¿Estás seguro de que quieres borrar el evento? <think><set name="topic">confirmar_borrar_evento</set></think>
+							</li>
+						</condition>
+					</li>
+				</condition>
+			</li>
+
+			<li>
+				Introduce la hora en formato hh:mm. ¿Quieres intentarlo otra vez? <think><set name="topic">intentar_borrar_evento</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="intentar_borrar_evento">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">
+				Dime la fecha del evento <think><set name="topic">borrar-evento</set></think>
+			</li>
+
+			<li value="no">
+				¡Avísame cuando necesites algo!
+			</li>
+
+			<li>
+				No te he entendido bien. ¿Quieres borrar un evento? <think><set name="topic">intentar_borrar_evento</set></think>
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<topic name="confirmar_borrar_evento">
+	<category>
+	<pattern>*</pattern>
+	<template>
+		<think><set var="accion"><star/></set></think>
+		<condition var="accion">
+			<li value="si">
+				<think><set var="n_eventos"><map name="numero_eventos"><get name="fecha"/></map></set></think>
+
+				<condition var="n_eventos">
+					<li value="1">
+						<removefrommap>
+							<name>numero_eventos</name>
+							<key><get name="fecha"/></key>
+						</removefrommap>
+
+						<removefrommap>
+							<name>listar_eventos</name>
+							<key><get name="fecha"/></key>
+						</removefrommap>
+
+						<removefrommap>
+							<name>nombres_eventos</name>
+							<key><get name="fecha"/></key>
+						</removefrommap>
+					</li>
+									
+					<li>
+						<modifymap>
+							<name>numero_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><map name="predecessor"><get var="n_eventos"/></map></value>
+						</modifymap>
+
+						<think><set var="nueva_lista"><srai>changeitem <get name="posicion_horario"/> by null in <get name="lista_titulos"/></srai></set></think>
+
+						<modifymap>
+							<name>nombres_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><get var="nueva_lista"/></value>
+						</modifymap>
+
+						<think><set var="lista_eventos"><map name="listar_eventos"><get name="fecha"/></map></set></think>
+						<think><set var="posicion"><srai>finditem <get name="titulo"/> in <get var="lista_eventos"/></srai></set></think>
+						<think><set var="nueva_lista"><srai>removeitem <get var="posicion"/> in <get var="lista_eventos"/></srai></set></think>
+						<think><set var="lista_final"><srai>removeitem <map name="predecessor"><get var="posicion"/></map> in <get var="nueva_lista"/></srai></set></think>
+
+						<modifymap>
+							<name>listar_eventos</name>
+							<key><get name="fecha"/></key>
+							<value><get var="lista_final"/></value>
+						</modifymap>
+
+					</li>
+				</condition>
+
+				<removefrommap>
+					<name>contactos_eventos</name>
+					<key><get name="fecha_hora"/></key>
+				</removefrommap>
+
+				¡Evento borrado! ¿Quieres borrar otro evento? <think><set name="topic">intentar_borrar_evento</set></think>
+			</li>
+
+			<li>
+				¡Avísame cuando necesites algo!
+			</li>
+		</condition>
+	</template>
+	</category>
+</topic>
+
+<!-- Listar eventos -->
+
+<category>
+<pattern># lista+ eventos ^ el dia *</pattern>
+<template>
+	<think><set var="fecha_hoy"><star index="3"/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="num_eventos"><map name="numero_eventos"><star index="3"/></map></set></think>
+					<condition var="num_eventos">
+						<li value="unknown"> Este dia no tienes ningún evento registrado </li>
+						<li>
+							<think><set var="salida"><srai>quitarespacios <map name="listar_eventos"><star index="3"/></map></srai></set></think>
+							<get var="salida"/>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+</template>
+</category>
+
+<category>
+<pattern># lista+ eventos ^ el * de * de+ *</pattern>
+<template>
+	<think><set var="mes"><star index="4"/></set></think>
+	<condition var="mes">
+		<li value="enero">
+			<think><set var="f"><star index="3"/>/01/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="febrero">
+			<think><set var="f"><star index="3"/>/02/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="marzo">
+			<think><set var="f"><star index="3"/>/03/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="abril">
+			<think><set var="f"><star index="3"/>/04/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="mayo">
+			<think><set var="f"><star index="3"/>/05/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="junio">
+			<think><set var="f"><star index="3"/>/06/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="julio">
+			<think><set var="f"><star index="3"/>/07/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="agosto">
+			<think><set var="f"><star index="3"/>/08/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="septiembre">
+			<think><set var="f"><star index="3"/>/09/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="octubre">
+			<think><set var="f"><star index="3"/>/10/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="noviembre">
+			<think><set var="f"><star index="3"/>/10/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="diciembre">
+			<think><set var="f"><star index="3"/>/10/<star index="5"/></set></think>
+			<srai>lista eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li>No has introducido un mes correcto</li>
+	</condition>
+</template>
+</category>
+
+<!-- Contar eventos -->
+
+<category>
+<pattern># cuantos eventos ^ +el dia *</pattern>
+<template>
+	<think><set var="fecha_hoy"><star index="3"/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="num_eventos"><map name="numero_eventos"><star index="3"/></map></set></think>
+					<condition var="num_eventos">
+						<li value="unknown"> Este dia no tienes ningún evento registrado </li>
+						<li value="1"> Este día tienes un evento </li>
+						<li>El dia <star index="3"/> tienes <get var="num_eventos"/> eventos</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+</template>
+</category>
+
+<category>
+<pattern># cuantos eventos ^ el * de * de+ *</pattern>
+<template>
+	<think><set var="mes"><star index="4"/></set></think>
+	<condition var="mes">
+		<li value="enero">
+			<think><set var="f"><star index="3"/>/01/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="febrero">
+			<think><set var="f"><star index="3"/>/02/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="marzo">
+			<think><set var="f"><star index="3"/>/03/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="abril">
+			<think><set var="f"><star index="3"/>/04/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="mayo">
+			<think><set var="f"><star index="3"/>/05/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="junio">
+			<think><set var="f"><star index="3"/>/06/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="julio">
+			<think><set var="f"><star index="3"/>/07/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="agosto">
+			<think><set var="f"><star index="3"/>/08/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="septiembre">
+			<think><set var="f"><star index="3"/>/09/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="octubre">
+			<think><set var="f"><star index="3"/>/10/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="noviembre">
+			<think><set var="f"><star index="3"/>/11/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li value="diciembre">
+			<think><set var="f"><star index="3"/>/12/<star index="5"/></set></think>
+			<srai>cuantos eventos el dia <get var="f"/></srai>
+		</li>
+
+		<li>No has introducido un mes correcto</li>
+	</condition>
+</template>
+</category>
+
+</aiml>

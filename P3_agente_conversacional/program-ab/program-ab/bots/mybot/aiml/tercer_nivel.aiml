@@ -1,0 +1,2207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<aiml version="2.0">
+
+<!-- ******************************************** -->
+<!-- ******************************************** -->
+<!-- *******************NIVEL 3****************** -->
+<!-- ******************************************** -->
+<!-- ******************************************** -->
+
+<!-- Voy a poner las consultas fijas, tal como están indicadas en el pdf de la práctica -->
+
+<category>
+<pattern>Tengo el dia libre</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="existe"><map name="numero_eventos"><get var="fecha_hoy"/></map></set></think>
+	<condition var="existe">
+		<li value="unknown">
+			¡Sí, puedes aprovechar el día por ahora!
+		</li>
+
+		<li>
+			No, hoy tienes <get var="existe"/> evento/s
+		</li>
+	</condition>
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi proximo evento de hoy</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="evento_null"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			No tienes eventos hoy
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set var="i">48</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="evento_null"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi proximo evento de mañana</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+	<think><set var="evento_null"><srai>iterate <get var="eventos_tomorrow"/></srai></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			No tienes eventos mañana
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set var="i">48</set></think>
+						</li>
+					</condition>
+
+					<think><set var="evento_null"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi proximo evento del dia *</pattern>
+<template>
+	<think><set var="fecha_hoy"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+					<think><set var="evento_null"><srai>iterate <get var="eventos_dia"/></srai></set></think>
+
+					<condition var="eventos_dia">
+						<li value="unknown">
+							No tienes eventos el <get var="fecha_hoy"/>
+						</li>
+
+						<li>
+							<think><set var="i">1</set></think>
+							<condition var="i">
+								<li value="49">
+								</li>
+								<li>
+									<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+									<condition var="comparar">
+										<li value="no">
+											Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map>
+											<think><set var="i">48</set></think>
+										</li>
+									</condition>
+
+									<think><set var="evento_null"><srai>next</srai></set></think>
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+								
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+	<pattern>Cual es mi proximo evento el (dia) * de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Cual es mi proximo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<category>
+<pattern>Cual es mi ultimo evento de hoy</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="evento_null"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			No tienes eventos hoy
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+					<get var="posible_salida"/>
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							<think><set var="posible_salida">Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map></set></think>
+						</li>
+					</condition>
+
+					<think><set var="evento_null"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi ultimo evento de mañana</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+	<think><set var="evento_null"><srai>iterate <get var="eventos_tomorrow"/></srai></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			No tienes eventos mañana
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+					<get var="posible_salida"/>
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							<think><set var="posible_salida">Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map></set></think>
+						</li>
+					</condition>
+
+					<think><set var="evento_null"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+<pattern>Cual es mi ultimo evento del dia *</pattern>
+<template>
+	<think><set var="fecha_hoy"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+					<think><set var="evento_null"><srai>iterate <get var="eventos_dia"/></srai></set></think>
+
+					<condition var="eventos_dia">
+						<li value="unknown">
+							No tienes eventos el <get var="fecha_hoy"/>
+						</li>
+
+						<li>
+							<think><set var="i">1</set></think>
+							<condition var="i">
+								<li value="49">
+									<get var="posible_salida"/>
+								</li>
+								<li>
+									<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+									<condition var="comparar">
+										<li value="no">
+											<think><set var="posible_salida">Tienes <srai>quitarespacios <get var="evento_null"/></srai> a las <map name="posicion_hora"><get var="i"/></map></set></think>
+										</li>
+									</condition>
+
+									<think><set var="evento_null"><srai>next</srai></set></think>
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+								
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+</template>
+</category>
+
+<category>
+	<pattern>Cual es mi ultimo evento el (dia) * de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Cual es mi ultimo evento del dia <get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<category>
+<pattern>Tengo algun hueco libre hoy</pattern>
+<template>
+	<think><set name="topic">hueco_hoy</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set name="iterador"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			Hoy estas libre
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+				</li>
+
+				<li>
+					<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_hoy"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">48</set></think>
+						</li>
+					</condition>
+
+					<think><set name="iterador"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_hoy">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set name="iterador"><srai>next</srai></set></think>
+
+	<think><set var="i"><get name="libre_hoy"/></set></think>
+	<condition var="i">
+		<li value="49">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="50">
+		</li>
+
+		<li>
+			<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_hoy"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">49</set></think>
+				</li>
+			</condition>
+
+			<think><set name="iterador"><srai>next</srai></set></think>
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<category>
+<pattern>Tengo algun hueco libre mañana</pattern>
+<template>
+	<think><set name="topic">hueco_mañana</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+	<think><set name="iterador"><srai>iterate <get var="eventos_tomorrow"/></srai></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			¡Mañana estás libre!
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+				</li>
+
+				<li>
+					<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_mañana"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">48</set></think>
+						</li>
+					</condition>
+
+					<think><set name="iterador"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_mañana">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+
+	<think><set var="i"><get name="libre_mañana"/></set></think>
+	<condition var="i">
+		<li value="49">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="50">
+		</li>
+
+		<li>
+			<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_mañana"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">49</set></think>
+				</li>
+			</condition>
+
+			<think><set name="iterador"><srai>next</srai></set></think>
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+		
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<category>
+<pattern>Tengo algun hueco libre el dia *</pattern>
+<template>
+	<think><set name="topic">hueco_dia</set></think>
+	<think><set name="fecha_dia"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get name="fecha_dia"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="deletrear"><srai>deletrea <get name="fecha_dia"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia"/></map></set></think>
+					<think><set name="iterador"><srai>iterate <get var="eventos_dia"/></srai></set></think>
+
+					<condition var="eventos_dia">
+						<li value="unknown">
+							¡El día <star/> estás libre!
+						</li>
+
+						<li>
+							<think><set var="i">1</set></think>
+							<condition var="i">
+								<li value="49">
+								</li>
+
+								<li>
+									<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+									<condition var="comparar">
+										<li value="yes">
+											Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+											<think><set name="libre_dia"><map name="successor"><get var="i"/></map></set></think>
+											<think><set var="i">48</set></think>
+										</li>
+									</condition>
+
+									<think><set name="iterador"><srai>next</srai></set></think>
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+								
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+	<pattern>Tengo algun hueco libre en * de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<topic name="hueco_dia">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia"/></map></set></think>
+
+	<think><set var="i"><get name="libre_dia"/></set></think>
+	<condition var="i">
+		<li value="49">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="50">
+		</li>
+
+		<li>
+			<think><set var="comparar"><srai>compare null with <get name="iterador"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_dia"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">49</set></think>
+				</li>
+			</condition>
+
+			<think><set name="iterador"><srai>next</srai></set></think>
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+		
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 13 que corresponde a las 6am hasta la posición 25 que corresponde a las 12am -->
+
+<category>
+<pattern>Tengo algun hueco libre hoy por la mañana</pattern>
+<template>
+	<think><set name="topic">hueco_hoy_maniana</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			Hoy estas libre
+		</li>
+
+		<li>
+			<think><set var="i">13</set></think>
+			<condition var="i">
+				<li value="27">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_hoy_mañana"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">26</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_hoy_maniana">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+
+	<think><set var="i"><get name="libre_hoy_mañana"/></set></think>
+	<condition var="i">
+		<li value="26">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="27">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_hoy_mañana"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">26</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+
+<!-- Voy a iterar desde la posición 26 que corresponde a las 12:30 hasta la posición 41 que corresponde a las 20:00 -->
+
+<category>
+<pattern>Tengo algun hueco libre hoy por la tarde</pattern>
+<template>
+	<think><set name="topic">hueco_hoy_tarde</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			Hoy estas libre
+		</li>
+
+		<li>
+			<think><set var="i">26</set></think>
+			<condition var="i">
+				<li value="42">
+					¡No tienes más alternativas!
+				</li>
+
+				<li value="43">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_hoy_tarde"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">42</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_hoy_tarde">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+
+	<think><set var="i"><get name="libre_hoy_tarde"/></set></think>
+	<condition var="i">
+		<li value="42">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="43">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_hoy_tarde"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">42</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 42 que corresponde a las 20:30 hasta la posición 12 que corresponde a las 05:30 -->
+
+<category>
+<pattern>Tengo algun hueco libre hoy por la noche</pattern>
+<template>
+	<think><set name="topic">hueco_hoy_noche</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			Hoy estas libre
+		</li>
+
+		<li>
+			<think><set var="i">42</set></think>
+			<condition var="i">
+				<li value="14">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_hoy_noche"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">13</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					<condition var="i">
+						<li value="49">
+							<think><set var="i">1</set></think>
+						</li>
+					</condition>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_hoy_noche">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+
+	<think><set var="i"><get name="libre_hoy_noche"/></set></think>
+	<condition var="i">
+		<li value="13">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="14">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_hoy"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_hoy_noche"><map name="successor"><get var="i"/></map></set></think>
+					<condition name="libre_hoy_noche">
+						<li value="49">
+							<think><set name="libre_hoy_noche">1</set></think>
+						</li>
+					</condition>
+					<think><set var="i">13</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+
+<!-- Voy a iterar desde la posición 13 que corresponde a las 6am hasta la posición 25 que corresponde a las 12am -->
+
+<category>
+<pattern>Tengo algun hueco libre mañana por la mañana</pattern>
+<template>
+	<think><set name="topic">hueco_maniana_maniana</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			¡Mañana estás libre!
+		</li>
+
+		<li>
+			<think><set var="i">13</set></think>
+			<condition var="i">
+				<li value="27">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_mañana_mañana"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">26</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_maniana_maniana">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<think><set var="i"><get name="libre_mañana_mañana"/></set></think>
+	<condition var="i">
+		<li value="26">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="27">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_mañana_mañana"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">26</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 26 que corresponde a las 12:30 hasta la posición 41 que corresponde a las 20:00 -->
+
+<category>
+<pattern>Tengo algun hueco libre mañana por la tarde</pattern>
+<template>
+	<think><set name="topic">hueco_maniana_tarde</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			¡Mañana estás libre!
+		</li>
+
+		<li>
+			<think><set var="i">26</set></think>
+			<condition var="i">
+				<li value="43">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_mañana_tarde"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">42</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_maniana_tarde">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<think><set var="i"><get name="libre_mañana_tarde"/></set></think>
+	<condition var="i">
+		<li value="42">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="43">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_mañana_tarde"><map name="successor"><get var="i"/></map></set></think>
+					<think><set var="i">42</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 42 que corresponde a las 20:30 hasta la posición 12 que corresponde a las 05:30 -->
+
+<category>
+<pattern>Tengo algun hueco libre mañana por la noche</pattern>
+<template>
+	<think><set name="topic">hueco_maniana_noche</set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<condition var="eventos_tomorrow">
+		<li value="unknown">
+			¡Mañana estás libre!
+		</li>
+
+		<li>
+			<think><set var="i">42</set></think>
+			<condition var="i">
+				<li value="14">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_mañana_noche"><map name="successor"><get var="i"/></map></set></think>
+							<condition name="libre_mañana_noche">
+								<li value="49">
+									<think><set name="libre_mañana_noche">1</set></think>
+								</li>
+							</condition>
+							<think><set var="i">13</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+					
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<topic name="hueco_maniana_noche">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_tomorrow"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+
+	<think><set var="i"><get name="libre_mañana_noche"/></set></think>
+	<condition var="i">
+		<li value="13">
+			¡No tienes más alternativas!
+		</li>
+
+		<li value="14">
+		</li>
+
+		<li>
+			<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_tomorrow"/></srai></set></think>
+			<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+			<condition var="comparar">
+				<li value="yes">
+					Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+					<think><set name="libre_mañana_noche"><map name="successor"><get var="i"/></map></set></think>
+					<condition name="libre_mañana_noche">
+						<li value="49">
+							<think><set name="libre_mañana_noche">1</set></think>
+						</li>
+					</condition>
+					<think><set var="i">13</set></think>
+				</li>
+			</condition>
+
+
+			<think><set var="i"><map name="successor"><get var="i"/></map>
+			</set></think>
+
+			<loop/>
+		</li>
+	</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 13 que corresponde a las 6am hasta la posición 25 que corresponde a las 12am -->
+
+<category>
+<pattern>Tengo algun hueco libre el dia * por la mañana</pattern>
+<template>
+	<think><set name="topic">hueco_fecha_maniana</set></think>
+	<think><set name="fecha_dia_alternativa"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get name="fecha_dia_alternativa"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="deletrear"><srai>deletrea <get name="fecha_dia_alternativa"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set name="topic">hueco_fecha_maniana</set></think>
+					<think><set name="fecha_dia_alternativa"><star/></set></think>
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+					<condition var="eventos_dia">
+						<li value="unknown">
+							¡El día <star/> estás libre!
+						</li>
+
+						<li>
+							<think><set var="i">13</set></think>
+							<condition var="i">
+								<li value="27">
+								</li>
+
+								<li>
+									<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+									<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+									<condition var="comparar">
+										<li value="yes">
+											Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+											<think><set name="libre_fecha_mañana"><map name="successor"><get var="i"/></map></set></think>
+											<think><set var="i">26</set></think>
+										</li>
+									</condition>
+
+
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+									
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+	<pattern>Tengo algun hueco libre el * de * de+ * por la mañana</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la mañana</srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<topic name="hueco_fecha_maniana">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+
+			<think><set var="i"><get name="libre_fecha_mañana"/></set></think>
+			<condition var="i">
+				<li value="26">
+					¡No tienes más alternativas!
+				</li>
+
+				<li value="27">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_fecha_mañana"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">26</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+
+					<loop/>
+				</li>
+			</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 26 que corresponde a las 12:30 hasta la posición 41 que corresponde a las 20:00 -->
+
+<category>
+<pattern>Tengo algun hueco libre el dia * por la tarde</pattern>
+<template>
+	<think><set name="topic">hueco_fecha_tarde</set></think>
+	<think><set name="fecha_dia_alternativa"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get name="fecha_dia_alternativa"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="deletrear"><srai>deletrea <get name="fecha_dia_alternativa"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set name="fecha_dia_alternativa"><star/></set></think>
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+					<condition var="eventos_dia">
+						<li value="unknown">
+							¡El día <star/> estás libre!
+						</li>
+
+						<li>
+							<think><set var="i">26</set></think>
+							<condition var="i">
+
+								<li value="43">
+								</li>
+
+								<li>
+									<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+									<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+									<condition var="comparar">
+										<li value="yes">
+											Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+											<think><set name="libre_fecha_tarde"><map name="successor"><get var="i"/></map></set></think>
+											<think><set var="i">42</set></think>
+										</li>
+									</condition>
+
+
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+									
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+	<pattern>Tengo algun hueco libre el * de * de+ * por la tarde</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la tarde</srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<topic name="hueco_fecha_tarde">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+
+			<think><set var="i"><get name="libre_fecha_tarde"/></set></think>
+			<condition var="i">
+				<li value="42">
+					¡No tienes más alternativas!
+				</li>
+
+				<li value="43">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_fecha_tarde"><map name="successor"><get var="i"/></map></set></think>
+							<think><set var="i">42</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+
+					<loop/>
+				</li>
+			</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Voy a iterar desde la posición 42 que corresponde a las 20:30 hasta la posición 12 que corresponde a las 05:30 -->
+
+<category>
+<pattern>Tengo algun hueco libre el dia * por la noche</pattern>
+<template>
+	<think><set name="topic">hueco_fecha_noche</set></think>
+	<think><set name="fecha_dia_alternativa"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get name="fecha_dia_alternativa"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set name="fecha_dia_alternativa"><star/></set></think>
+					<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+					<condition var="eventos_dia">
+						<li value="unknown">
+							¡El día <star/> estás libre!
+						</li>
+
+						<li>
+							<think><set var="i">42</set></think>
+							<condition var="i">
+								<li value="14">
+								</li>
+
+								<li>
+									<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+									<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+									<condition var="comparar">
+										<li value="yes">
+											Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+											<think><set name="libre_fecha_noche"><map name="successor"><get var="i"/></map></set></think>
+											<condition name="libre_fecha_noche">
+												<li value="49">
+													<think><set name="libre_fecha_noche">1</set></think>
+												</li>
+											</condition>
+											<think><set var="i">13</set></think>
+										</li>
+									</condition>
+
+
+									<think><set var="i"><map name="successor"><get var="i"/></map>
+									</set></think>
+									
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<category>
+	<pattern>Tengo algun hueco libre el * de * de+ * por la noche</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Tengo algun hueco libre el dia <get var="f"/> por la noche</srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+<topic name="hueco_fecha_noche">
+<category>
+<pattern>Alguna otra alternativa</pattern>
+<template>
+	<think><set var="eventos_dia"><map name="nombres_eventos"><get name="fecha_dia_alternativa"/></map></set></think>
+
+			<think><set var="i"><get name="libre_fecha_noche"/></set></think>
+			<condition var="i">
+				<li value="13">
+					¡No tienes más alternativas!
+				</li>
+
+				<li value="14">
+				</li>
+
+				<li>
+					<think><set var="evento_null"><srai>selectitem <get var="i"/> in <get var="eventos_dia"/></srai></set></think>
+					<think><set var="comparar"><srai>compare null with <get var="evento_null"/></srai></set></think>
+					<condition var="comparar">
+						<li value="yes">
+							Tienes libre a las <map name="posicion_hora"><get var="i"/></map>
+							<think><set name="libre_fecha_noche"><map name="successor"><get var="i"/></map></set></think>
+							<condition name="libre_fecha_noche">
+								<li value="49">
+									<think><set name="libre_fecha_noche">1</set></think>
+								</li>
+							</condition>
+							<think><set var="i">13</set></think>
+						</li>
+					</condition>
+
+
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+
+					<loop/>
+				</li>
+			</condition>
+	
+</template>
+</category>
+</topic>
+
+<!-- Con quienes me tengo que reunir hoy -->
+
+<category>
+<pattern>Con quien+ me tengo que reunir hoy</pattern>
+<template>
+	<think><set var="valores"><readkeys>contactos_eventos</readkeys></set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+	<think><set var="iterar"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+	<think><set var="numero_eventos_con_contactos">0</set></think>
+	<think><set var="salida"></set></think>
+
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			¡Hoy no te tienes que reunir con nadie!
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+					<condition var="numero_eventos_con_contactos">
+						<li value="0">
+							¡Hoy no te tienes que reunir con nadie!
+						</li>
+
+						<li>
+							<get var="salida"/>
+						</li>
+					</condition>
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="iterate"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							<think><set var="persona"><map name="contactos_eventos"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+							<condition var="persona">
+								<li value="unknown"></li>
+
+								<li>
+									<think><set var="fechahora"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></set></think>
+									<think><set var="contactos_asociados"><map name="contactos_eventos"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+									<think><set var="salida"><get var="salida"/>
+									Tienes que reunirte con <get var="contactos_asociados"/> a las <map name="posicion_hora"><get var="i"/></map>. </set></think>
+									<think><set var="numero_eventos_con_contactos"><map name="successor"><get var="numero_eventos_con_contactos"/></map></set></think>
+								</li>
+							</condition>
+						</li>
+					</condition>
+
+					<think><set var="iterar"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<!-- Con quienes me tengo que reunir mañana -->
+
+<category>
+<pattern>Con quien+ me tengo que reunir mañana</pattern>
+<template>
+	
+	<think><set var="valores"><readkeys>contactos_eventos</readkeys></set></think>
+	<think><set var="fecha_hoy"><date jformat="dd/MM/yyyy" /></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+	<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+	<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+	<think><set var="sumar_dia"><srai>tomorrow <get var="final"/></srai></set></think>
+
+	<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="sumar_dia"/></map></set></think>
+	<think><set var="iterar"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+	<think><set var="salida"></set></think>
+	<think><set var="numero_eventos_con_contactos">0</set></think>
+
+	<condition var="eventos_hoy">
+		<li value="unknown">
+			¡Mañana no te tienes que reunir con nadie!
+		</li>
+
+		<li>
+			<think><set var="i">1</set></think>
+			<condition var="i">
+				<li value="49">
+					<condition var="numero_eventos_con_contactos">
+						<li value="0">
+							¡Mañana no te tienes que reunir con nadie!
+						</li>
+
+						<li>
+							<get var="salida"/>
+						</li>
+					</condition>
+				</li>
+				<li>
+					<think><set var="comparar"><srai>compare null with <get var="iterar"/></srai></set></think>
+					<condition var="comparar">
+						<li value="no">
+							<think><set var="persona"><map name="contactos_eventos"><get var="sumar_dia"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+							<condition var="persona">
+								<li value="unknown">
+								</li>
+
+								<li>
+									<think><set var="fechahora"><get var="sumar_dia"/>-<map name="posicion_hora"><get var="i"/></map></set></think>
+									<think><set var="contactos_asociados"><map name="contactos_eventos"><get var="sumar_dia"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+									<think><set var="salida"><get var="salida"/>
+									Tienes que reunirte con <get var="contactos_asociados"/> a las <map name="posicion_hora"><get var="i"/></map>. </set></think>
+									<think><set var="numero_eventos_con_contactos"><map name="successor"><get var="numero_eventos_con_contactos"/></map></set></think>
+								</li>
+							</condition>
+						</li>
+					</condition>
+
+					<think><set var="iterar"><srai>next</srai></set></think>
+					<think><set var="i"><map name="successor"><get var="i"/></map>
+					</set></think>
+				
+					<loop/>
+				</li>
+			</condition>
+		</li>
+	</condition>
+	
+</template>
+</category>
+
+<!-- Con quienes me tengo que reunir un dia -->
+
+<category>
+<pattern>Con quien+ me tengo que reunir el dia *</pattern>
+<template>
+	<think><set var="fecha_hoy"><star/></set></think>
+	<think><set var="deletrear"><srai>deletrea <get var="fecha_hoy"/></srai></set></think>
+
+	<think><set var="contar_fecha"><srai>count <get var="deletrear"/></srai></set></think>
+	<condition var="contar_fecha">
+		<li value="10">
+			<think><set var="quitar_barras"><srai>changeitem 3 by _ in <get var="deletrear"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 4 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="quitar_barras"><srai>changeitem 6 by _ in <get var="quitar_barras"/></srai></set></think>
+			<think><set var="final"><srai>quitarespacios <get var="quitar_barras"/></srai></set></think>
+			<think><set var="comprobar"><srai>validdate <get var="final"/></srai></set></think>
+
+			<condition var="comprobar">
+				<li value="yes">
+					<think><set var="valores"><readkeys>contactos_eventos</readkeys></set></think>
+					<think><set var="eventos_hoy"><map name="nombres_eventos"><get var="fecha_hoy"/></map></set></think>
+					<think><set var="numero_eventos_con_contactos">0</set></think>
+					<think><set var="iterar"><srai>iterate <get var="eventos_hoy"/></srai></set></think>
+					<think><set var="salida"></set></think>
+
+					<condition var="eventos_hoy">
+						<li value="unknown">
+							¡El día <star/> no te tienes que reunir con nadie!
+						</li>
+
+						<li>
+							<think><set var="i">1</set></think>
+							<condition var="i">
+								<li value="49">
+									<condition var="numero_eventos_con_contactos">
+										<li value="0">
+											¡El día <star/> no te tienes que reunir con nadie!
+										</li>
+
+										<li>
+											<get var="salida"/>
+										</li>
+									</condition>
+								</li>
+								<li>
+									<think><set var="comparar"><srai>compare null with <get var="iterar"/></srai></set></think>
+									<condition var="comparar">
+										<li value="no">
+											<think><set var="persona"><map name="contactos_eventos"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+											<condition var="persona">
+												<li value="unknown">
+												</li>
+
+												<li>
+													<think><set var="fechahora"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></set></think>
+													<think><set var="contactos_asociados"><map name="contactos_eventos"><get var="fecha_hoy"/>-<map name="posicion_hora"><get var="i"/></map></map></set></think>
+													<think><set var="salida">
+														<get var="salida"/>
+														Tienes que reunirte con <get var="contactos_asociados"/> a las <map name="posicion_hora"><get var="i"/></map>. </set></think>
+													<think><set var="numero_eventos_con_contactos"><map name="successor"><get var="numero_eventos_con_contactos"/></map></set></think>
+												</li>
+											</condition>
+										</li>
+									</condition>
+
+									<think><set var="iterar"><srai>next</srai></set></think>
+									<think><set var="i"><map name="successor"><get var="i"/></map></set></think>
+								
+									<loop/>
+								</li>
+							</condition>
+						</li>
+					</condition>
+				</li>
+
+				<li>
+					¡Esta fecha no es correcta!
+				</li>
+			</condition>
+		</li>
+
+		<li>
+			Tienes que introducir la fecha en formato dd/mm/aaaa.
+		</li>
+	</condition>
+
+</template>
+</category>
+
+<category>
+	<pattern>Con quienes me tengo que reunir el * de * de+ *</pattern>
+	<template>
+		<think><set var="mes"><star index="2"/></set></think>
+		<condition var="mes">
+			<li value="enero">
+				<think><set var="f"><star/>/01/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="febrero">
+				<think><set var="f"><star/>/02/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="marzo">
+				<think><set var="f"><star/>/03/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="abril">
+				<think><set var="f"><star/>/04/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="mayo">
+				<think><set var="f"><star/>/05/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="junio">
+				<think><set var="f"><star/>/06/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="julio">
+				<think><set var="f"><star/>/07/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="agosto">
+				<think><set var="f"><star/>/08/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="septiembre">
+				<think><set var="f"><star/>/09/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="octubre">
+				<think><set var="f"><star/>/10/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="noviembre">
+				<think><set var="f"><star/>/11/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li value="diciembre">
+				<think><set var="f"><star/>/12/<star index="3"/></set></think>
+				<srai>Con quienes me tengo que reunir el dia <get var="f"/></srai>
+			</li>
+
+			<li>¡No has introducido un mes correcto!</li>
+		</condition>
+	</template>
+	</category>
+
+</aiml>
